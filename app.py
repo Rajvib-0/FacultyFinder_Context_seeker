@@ -1,34 +1,56 @@
-"""
-Flask Web Application for Faculty Search Engine
-Main application file with API endpoints
-"""
-
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
+from search_engine_improved import EnhancedFacultySearchEngine
 import sys
 import os
-
-# Import our enhanced search engine
-from search_engine_improved import EnhancedFacultySearchEngine
+import traceback
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for API access
+CORS(app)
 
-# Global search engine instance
 search_engine = None
 
 def initialize_search_engine():
-    """Initialize the search engine on startup"""
+    """Initialize the enhanced search engine"""
     global search_engine
     try:
-        print("Initializing search engine...")
-        search_engine = EnhancedFacultySearchEngine('faculty_data.csv')
-        search_engine.initialize(use_multi_field=True)
-        print("✓ Search engine initialized successfully!")
+        print("="*80)
+        print("Initializing Enhanced Faculty Search Engine...")
+        print("="*80)
+        
+        # Check if data file exists
+        data_file = 'faculty_data.csv'
+        if not os.path.exists(data_file):
+            print(f"Error: {data_file} not found!")
+            print(f"Current directory: {os.getcwd()}")
+            print(f"Files in directory: {os.listdir('.')}")
+            return False
+        
+        print(f"Found data file: {data_file}")
+        
+        # Initialize search engine
+        search_engine = EnhancedFacultySearchEngine(data_file)
+        search_engine.initialize(force_rebuild=False, use_multi_field=True)
+        
+        print("Search engine initialized successfully!")
         return True
+        
     except Exception as e:
-        print(f"✗ Error initializing search engine: {e}")
+        print(f"Error initializing search engine: {e}")
+        traceback.print_exc()
         return False
+
+# Initialize on module load (for Gunicorn workers)
+print("\n" + "="*80)
+print("Starting Faculty Finder Application")
+print("="*80)
+initialization_success = initialize_search_engine()
+if not initialization_success:
+    print("WARNING: Search engine failed to initialize!")
+    print("App will start but search functionality will not work")
+print("="*80 + "\n")
+
+# ==================== ROUTES ====================
 
 @app.route('/')
 def index():
@@ -46,6 +68,16 @@ def about():
     stats = search_engine.get_statistics() if search_engine else {}
     return render_template('about.html', stats=stats)
 
+@app.route('/health')
+def health():
+    """Health check endpoint for monitoring"""
+    return jsonify({
+        'status': 'ok',
+        'search_engine_ready': search_engine is not None
+    })
+
+# ==================== API ENDPOINTS ====================
+
 @app.route('/api/search', methods=['POST'])
 def api_search():
     """
@@ -57,24 +89,14 @@ def api_search():
         "top_k": 5,
         "use_hybrid": true
     }
-    
-    Response JSON:
-    {
-        "success": true,
-        "query": "machine learning",
-        "results": [...],
-        "count": 5,
-        "search_time": 0.123
-    }
     """
     try:
         if not search_engine:
             return jsonify({
                 'success': False,
-                'error': 'Search engine not initialized'
+                'error': 'Search engine not initialized. Please contact administrator.'
             }), 500
         
-        # Get request data
         data = request.get_json()
         query = data.get('query', '').strip()
         top_k = data.get('top_k', 10)
@@ -101,6 +123,8 @@ def api_search():
         })
         
     except Exception as e:
+        print(f"Search error: {e}")
+        traceback.print_exc()
         return jsonify({
             'success': False,
             'error': str(e)
@@ -108,15 +132,7 @@ def api_search():
 
 @app.route('/api/stats', methods=['GET'])
 def api_stats():
-    """
-    API endpoint for getting search engine statistics
-    
-    Response JSON:
-    {
-        "success": true,
-        "stats": {...}
-    }
-    """
+    """Get search engine statistics"""
     try:
         if not search_engine:
             return jsonify({
@@ -138,9 +154,7 @@ def api_stats():
 
 @app.route('/api/faculty/<int:faculty_id>', methods=['GET'])
 def api_faculty_details(faculty_id):
-    """
-    API endpoint for getting detailed faculty information
-    """
+    """Get detailed faculty information by ID"""
     try:
         if not search_engine:
             return jsonify({
@@ -176,52 +190,7 @@ def api_faculty_details(faculty_id):
             'error': str(e)
         }), 500
 
-@app.route('/api/compare', methods=['POST'])
-def api_compare():
-    """
-    API endpoint for comparing semantic-only vs hybrid search
-    
-    Request JSON:
-    {
-        "query": "machine learning",
-        "top_k": 5
-    }
-    """
-    try:
-        if not search_engine:
-            return jsonify({
-                'success': False,
-                'error': 'Search engine not initialized'
-            }), 500
-        
-        data = request.get_json()
-        query = data.get('query', '').strip()
-        top_k = data.get('top_k', 5)
-        
-        if not query:
-            return jsonify({
-                'success': False,
-                'error': 'Query cannot be empty'
-            }), 400
-        
-        # Semantic only
-        semantic_results = search_engine.search(query, top_k=top_k, use_hybrid=False)
-        
-        # Hybrid
-        hybrid_results = search_engine.search(query, top_k=top_k, use_hybrid=True)
-        
-        return jsonify({
-            'success': True,
-            'query': query,
-            'semantic_results': semantic_results,
-            'hybrid_results': hybrid_results
-        })
-        
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
+# ==================== ERROR HANDLERS ====================
 
 @app.errorhandler(404)
 def not_found(e):
@@ -233,25 +202,19 @@ def server_error(e):
     """Handle 500 errors"""
     return render_template('500.html'), 500
 
+# ==================== MAIN ====================
+
 if __name__ == '__main__':
-    # Initialize search engine before starting server
-    if initialize_search_engine():
-        print("\n" + "="*80)
-        print("🚀 Faculty Search Engine Web App")
-        print("="*80)
-        print("Server starting at: http://localhost:8081")
-        print("API documentation: http://localhost:8081/api/docs")
-        print("\nAvailable endpoints:")
-        print("  GET  /              - Main page")
-        print("  GET  /search        - Search interface")
-        print("  GET  /about         - About page")
-        print("  POST /api/search    - Search API")
-        print("  GET  /api/stats     - Statistics API")
-        print("  POST /api/compare   - Compare search methods")
-        print("="*80 + "\n")
-        
-        # Run the Flask app
-        app.run(debug=True, host='0.0.0.0', port=8081)
-    else:
-        print("Failed to initialize search engine. Please check your faculty_data.csv file.")
-        sys.exit(1)
+    # This only runs in development (not with Gunicorn)
+    port = int(os.environ.get('PORT', 8081))
+    print(f"\nDevelopment Server Starting on http://localhost:{port}")
+    print("Available endpoints:")
+    print("  GET  /              - Main page")
+    print("  GET  /search        - Search interface")
+    print("  GET  /about         - About page")
+    print("  GET  /health        - Health check")
+    print("  POST /api/search    - Search API")
+    print("  GET  /api/stats     - Statistics API")
+    print("="*80 + "\n")
+    
+    app.run(debug=True, host='0.0.0.0', port=port)
