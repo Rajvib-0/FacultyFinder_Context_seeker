@@ -110,6 +110,28 @@ FacultyFinder_Context_seeker/
 
 └── LICENSE                              # MIT License
 
+## Complete Workflow
+**Part1 :**  
+
+**Web Pages (HTML) -> Scraping (Ingestion.py) -> Cleaning & Transformation (Cleaner.py) -> SQLite Storage (Storage.py)->FastAPI Endpoint (/faculty)**
+
+**Part2 :**
+CSV Data (faculty_data.csv) --> Enhanced Search Engine (search_engine_improved.py)
+
+    ├── Load & Process Data
+    ├── Generate Multi-Field Embeddings (384-dim)
+    ├── Build FAISS Index
+    └── Cache for Fast Startup
+    ↓
+Flask Web Application (app.py)
+
+    ├── Home Page (Hero + Features)
+    ├── Search Interface (Advanced Options)
+    ├── About Page (Statistics)
+    └── REST API Endpoints
+    ↓
+User Queries → Semantic Search → Ranked Results
+
 ---
 ## Live Demo
  Part1: https://facultyfinder-context-seeker.onrender.com/faculty
