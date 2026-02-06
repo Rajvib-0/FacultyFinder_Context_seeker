@@ -1,12 +1,4 @@
-"""
-Faculty Finder - Enhanced Semantic Search Engine
-Improvements:
-- Multi-field weighted embeddings
-- Hybrid scoring (semantic + keyword matching)
-- Query expansion for better context understanding
-- Field-specific boosting
-- Better handling of "not provided" values
-"""
+
 
 import pandas as pd
 import numpy as np
@@ -23,13 +15,7 @@ class EnhancedFacultySearchEngine:
     """Enhanced semantic search engine with improved scoring and context awareness"""
     
     def __init__(self, data_path: str = 'faculty_data.csv', model_name: str = 'all-MiniLM-L6-v2'):
-        """
-        Initialize the enhanced search engine
-        
-        Args:
-            data_path: Path to the faculty CSV file
-            model_name: Sentence-transformer model name
-        """
+      
         self.data_path = data_path
         self.model_name = model_name
         self.model = None
@@ -39,11 +25,11 @@ class EnhancedFacultySearchEngine:
         
         # Field weights for different components
         self.field_weights = {
-            'specialization': 3.0,  # Highest weight - most relevant
-            'publications': 2.0,     # Research output is important
-            'biography': 1.5,        # Background context
-            'education': 1.0,        # Educational background
-            'name': 0.5             # Name matching
+            'specialization': 3.0,  
+            'publications': 2.0,     
+            'biography': 2.0,        
+            'education': 1.5,        
+            'name': 0.5           
         }
         
         # Separate embeddings for each field
@@ -65,9 +51,7 @@ class EnhancedFacultySearchEngine:
         return cleaned not in placeholders and len(cleaned) > 5
     
     def load_and_process_data(self) -> pd.DataFrame:
-        """
-        Load faculty data and create field-specific processed versions
-        """
+       
         print(f"Loading data from {self.data_path}...")
         df = pd.read_csv(self.data_path)
         
@@ -136,12 +120,7 @@ class EnhancedFacultySearchEngine:
         return " ".join(parts)
     
     def generate_embeddings(self, use_multi_field: bool = True) -> np.ndarray:
-        """
-        Generate embeddings with optional multi-field approach
         
-        Args:
-            use_multi_field: If True, generate separate embeddings for each field
-        """
         print(f"Loading model: {self.model_name}...")
         self.model = SentenceTransformer(self.model_name)
         
@@ -182,8 +161,9 @@ class EnhancedFacultySearchEngine:
         print("Building FAISS index...")
         
         # Normalize embeddings for cosine similarity
-        embeddings_normalized = self.embeddings / np.linalg.norm(self.embeddings, axis=1, keepdims=True)
-        
+        norms = np.linalg.norm(self.embeddings, axis=1, keepdims=True)
+        norms[norms == 0] = 1
+        embeddings_normalized = self.embeddings / norms
         dimension = embeddings_normalized.shape[1]
         
         # Use IndexFlatIP for inner product (cosine similarity after normalization)
@@ -222,8 +202,8 @@ class EnhancedFacultySearchEngine:
         field_keyword_weights = {
             'areaSpecialization': 3.0,
             'publications': 2.0,
-            'biography': 1.5,
-            'facultyEducation': 1.0,
+            'biography': 2,
+            'facultyEducation': 1.5,
             'name': 0.5
         }
         
@@ -244,10 +224,11 @@ class EnhancedFacultySearchEngine:
         """Expand query with related terms for better matching"""
         # Add common academic synonyms and related terms
         expansions = {
-            'machine learning': 'machine learning artificial intelligence AI deep learning neural networks',
-            'ai': 'artificial intelligence machine learning deep learning',
+            'ml': 'machine learning ',
+            'ai': 'artificial intelligence',
+            'nlp': 'natural language processing',
             'renewable energy': 'renewable energy sustainable energy clean energy solar wind',
-            'wireless': 'wireless communication networks mobile telecommunication',
+            'wireless': 'wireless communication telecommunication',
             'quantum': 'quantum computing quantum mechanics quantum physics',
             'data': 'data science data analytics big data data mining',
             'cyber': 'cybersecurity security network security information security',
@@ -301,7 +282,7 @@ class EnhancedFacultySearchEngine:
             
             # Combine scores (70% semantic, 30% keyword)
             if use_hybrid and keyword_score > 0:
-                final_score = 0.7 * float(semantic_score) + 0.3 * keyword_score
+                final_score = 0.75 * float(semantic_score) + 0.25 * keyword_score
             else:
                 final_score = float(semantic_score)
             
@@ -343,13 +324,6 @@ class EnhancedFacultySearchEngine:
         return results
     
     def initialize(self, force_rebuild: bool = False, use_multi_field: bool = True):
-        """
-        Initialize the enhanced search engine
-        
-        Args:
-            force_rebuild: Force rebuild even if cache exists
-            use_multi_field: Use multi-field embeddings approach
-        """
         cache_file = f'enhanced_search_cache_{"multi" if use_multi_field else "single"}.pkl'
         
         if not force_rebuild and os.path.exists(cache_file):
@@ -386,7 +360,7 @@ class EnhancedFacultySearchEngine:
                 'embeddings': self.embeddings,
                 'field_embeddings': self.field_embeddings
             }, f)
-        print("✓ Initialization complete!")
+        print("Initialization complete!")
     
     def get_statistics(self) -> Dict:
         """Get detailed statistics"""
@@ -475,3 +449,4 @@ if __name__ == "__main__":
     stats = engine.get_statistics()
     for key, value in stats.items():
         print(f"  {key}: {value}")
+
