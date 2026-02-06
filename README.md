@@ -92,8 +92,6 @@ FacultyFinder_Context_seeker/
   ├── [main.js](main.js)                 # Main JavaScript
 
   └── [search.js](search.js)                # Search page logic
-
-   └── [enhanced_search_cache_multi.pkl](search_engine_improved.cpython-313.pyc)  # Embeddings cache
    
 ---
 ├── Documentation
@@ -136,7 +134,7 @@ User Queries → Semantic Search → Ranked Results
 ## Live Demo
  Part1: https://facultyfinder-context-seeker.onrender.com/faculty
  
-Part2: https://facultyfinder-context-seeker.onrender.com
+Part2: [https://facultyfinder-context-seeker-45g9.onrender.com](https://facultyfinder-context-seeker-45g9.onrender.com/)
 
 ##  Running Locally
 
