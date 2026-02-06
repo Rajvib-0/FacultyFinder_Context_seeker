@@ -1,0 +1,18 @@
+# Python compiled files
+*.pyc
+*.pyo
+__pycache__/
+
+# Cache files
+*.pkl
+
+# Virtual environments
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
