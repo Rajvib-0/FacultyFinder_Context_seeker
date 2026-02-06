@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: faculty-finder
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: gunicorn app:app --workers 1 --threads 2 --timeout 600 --preload
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: WORKERS
+        value: 1
