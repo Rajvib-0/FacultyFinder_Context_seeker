@@ -1,4 +1,4 @@
-'''from fastapi import FastAPI
+from fastapi import FastAPI
 import sqlite3
 
 app = FastAPI()
@@ -16,4 +16,4 @@ def get_faculty_data():
     rows = cursor.fetchall()
     conn.close()
     faculty_list = [dict(zip(columns, row)) for row in rows]
-    return {"faculty": faculty_list}'''
+    return {"faculty": faculty_list}
