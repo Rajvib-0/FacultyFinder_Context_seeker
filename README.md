@@ -52,24 +52,24 @@ FacultyFinder_Context_seeker/
 ---
 ├── Part 1: Data Pipeline
  
-   ├── [main.py](main.py)                            # FastAPI app
+   ├── [main.py](Back/main.py)                            # FastAPI app
 
-   ├──-[Ingestion.py](Ingestion.py)                   # Web scraper
+   ├──-[Ingestion.py](Back/Ingestion.py)                   # Web scraper
 
-   ├──-[Cleaner.py ](Cleaner.py )                     # Data transformation
+   ├──-[Cleaner.py ](Back/Cleaner.py )                     # Data transformation
 
-   ├──-[Storage.py]( Storage.py)                      # Database schema
+   ├──-[Storage.py](Back/Storage.py)                      # Database schema
 
-   └──-[faculty.db](faculty.db )                      # SQLite database
+   └──-[faculty.db](Back/faculty.db )                      # SQLite database
 
 ---
 ├── Part 2: Search Engine & Web Ap
 
-   ├── [app.py](app.py)                         # streamlit web application
+   ├── [app.py](front/app.py)                         # streamlit web application
 
-   ├── [search_engine_improved.py](search_engine_improved.py)        # Enhanced semantic search
+   ├── [search_engine_improved.py](front/search_engine_improved.py)        # Enhanced semantic search
 
-   ├── [faculty_data.csv](faculty_data.csv )                # Exported faculty data
+   ├── [faculty_data.csv](front/faculty_data.csv )                # Exported faculty data
 
           
   
@@ -81,9 +81,9 @@ FacultyFinder_Context_seeker/
 
 ├── Deployment
 
-   ├── [requirements.txt ](requirements.txt)                # Python dependencies
+   ├── [requirements.txt part2](front/requirements.txt),[requirements.txt part1](Back/requirements.txt)                # Python dependencies
 
-   └── .gitignore
+   └── [.gitignore](front/.gitignore)
 
 └── LICENSE                              # MIT License
 
@@ -135,13 +135,13 @@ Part2: https://huggingface.co/spaces/MoriartyR/Faculty-Finder
 **Part 2 Semantic Search Engine**
 1. Install additional dependencies:
    ```bash
-   pip install flask flask-cors sentence-transformers faiss-cpu torch transformers scikit-learn scipy
+   pip install streamlit numpy pandas sentence-transformers faiss-cpu torch transformers scikit-learn scipy
 2. Ensure you have faculty data:
    ```bash
    Export from SQLite or use provided CSV
   [faculty_data.csv](faculty_data.csv)
   
-3. Run the Flask app:
+3. Run the app:
    ```bash
    python app.py
 4. Access the web interface:
