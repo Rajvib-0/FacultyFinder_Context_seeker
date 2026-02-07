@@ -117,7 +117,7 @@ def search_page():
 
                 with col_a:
                     st.markdown(f"**Name:** {r.get('name', 'N/A')}")
-                    st.markdown(f"**Area of Specialization:** {r.get('areaSpecialization', 'N/A')}")
+                    st.markdown(f"**Area of Specialization:** {r.get('specialization', 'N/A')}")
                     st.markdown(f"**Email:** {r.get('email', 'N/A')}")
                     st.markdown(f"**Address:** {r.get('address', 'N/A')}")
 
@@ -137,7 +137,7 @@ def search_page():
 
 def main():
     st.sidebar.title("📚 Navigation")
-    page = st.sidebar.radio("", ["Home", "Search", "About"])
+    page = st.sidebar.radio("", ["Home", "Search"])
 
     st.sidebar.markdown("---")
     engine = get_search_engine()
@@ -150,9 +150,8 @@ def main():
         home_page()
     elif page == "Search":
         search_page()
-    elif page == "About":
-        about_page()
 
 
 if __name__ == "__main__":
     main()
+
