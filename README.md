@@ -16,10 +16,10 @@ those specific phrases aren't in their official department title.
 | **Ingestion**    | `requests`,`BeautifulSoup`| 
 | **Transformation** | `pandas`, `cleantext`   | 
 | **Storage**      | `sqlite3`,  `CSV`         | 
-| **Serving**      | `FastAPI`, `Flask`        | 
+| **Serving**      | `FastAPI`, `unicorn`        | 
 |**Search Engine** | `sentence-transformers`,`FAISS`| 
 | **Models**      | `torch`, `scikit-learn`    | 
-| **Web Interface** | `HTML5`, `CSS3`, `JavaScript`| 
+| **Deployment** | `Render`, `HuggingFace spaces`| 
 
 ##  Data Schema
 
@@ -63,46 +63,25 @@ FacultyFinder_Context_seeker/
    └──-[faculty.db](faculty.db )                      # SQLite database
 
 ---
-├── Part 2: Search Engine & Web App
+├── Part 2: Search Engine & Web Ap
 
-   ├── [app.py](app.py)                         # Flask web application
+   ├── [app.py](app.py)                         # streamlit web application
 
    ├── [search_engine_improved.py](search_engine_improved.py)        # Enhanced semantic search
 
    ├── [faculty_data.csv](faculty_data.csv )                # Exported faculty data
 
-   ├── templates/                       # HTML templates
-
-   ├── [index.html](index.html )                   # Home page
-
-   ├── [search.html](search.html)                 # Search interface
-
-   ├── [404.html](404.html)                     # Error pages
-
-   └── [500.html](500.html)
-
-   ├── static/                          # Static assets
-
-   \ ├── css/
-   
-   \└── [style.css](style.css)                # Main stylesheet
-
-   \└── js/
-
-  ├── [main.js](main.js)                 # Main JavaScript
-
-  └── [search.js](search.js)                # Search page logic
+          
+  
    
 ---
 ├── Documentation
 
-   ├── README.md                        # This file
+   ├── [README.md](README.md)                       # This file
 
 ├── Deployment
 
    ├── [requirements.txt ](requirements.txt)                # Python dependencies
-
-   ├── [render.yaml](render.yaml)                      # Render configuration
 
    └── .gitignore
 
@@ -121,7 +100,7 @@ CSV Data (faculty_data.csv) --> Enhanced Search Engine (search_engine_improved.p
     ├── Build FAISS Index
     └── Cache for Fast Startup
     ↓
-Flask Web Application (app.py)
+streamlit Web Application (app.py)
 
     ├── Home Page (Hero + Features)
     ├── Search Interface (Advanced Options)
