@@ -85,6 +85,8 @@ FacultyFinder_Context_seeker/
 
    └── [.gitignore](front/.gitignore)
 
+├── [llm_logs.md](llm_logs.md)
+
 └── LICENSE                              # MIT License
 
 ## Complete Workflow
