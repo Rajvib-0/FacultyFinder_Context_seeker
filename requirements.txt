@@ -3,14 +3,3 @@ uvicorn
 requests
 beautifulsoup4
 lxml
-Flask
-flask-cors
-pandas
-numpy
-sentence-transformers
-faiss-cpu
-torch
-transformers
-scikit-learn
-scipy
-gunicorn
