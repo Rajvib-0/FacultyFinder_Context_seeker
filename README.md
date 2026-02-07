@@ -125,7 +125,6 @@ Flask Web Application (app.py)
 
     ├── Home Page (Hero + Features)
     ├── Search Interface (Advanced Options)
-    ├── About Page (Statistics)
     └── REST API Endpoints
     ↓
 User Queries → Semantic Search → Ranked Results
@@ -134,7 +133,7 @@ User Queries → Semantic Search → Ranked Results
 ## Live Demo
  Part1: https://facultyfinder-context-seeker.onrender.com/faculty
  
-Part2: [https://facultyfinder-context-seeker-45g9.onrender.com](https://facultyfinder-context-seeker-45g9.onrender.com/)
+Part2: https://huggingface.co/spaces/MoriartyR/Faculty-Finder
 
 ##  Running Locally
 
@@ -196,7 +195,7 @@ Search: http://localhost:8081/search
 
 - Biography: 2.0x (background context)
 
-- Education: 1.0x (credentials)
+- Education: 1.5x (credentials)
 
 - Name: 0.5x (name matching)
 
