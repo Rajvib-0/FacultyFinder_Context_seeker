@@ -1,5 +1,4 @@
-Flask
-flask-cors
+streamlit
 pandas
 numpy
 sentence-transformers
@@ -8,5 +7,4 @@ torch
 transformers
 scikit-learn
 scipy
-gunicorn
-
+python-dotenv
